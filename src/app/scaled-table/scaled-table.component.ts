@@ -1,18 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-enum DocumentOrientation {
-    Portrait = 1,
-    Landscape = 2
-}
-
-interface IDocumentScale {
-  /** The name of the scale (i.e. US Legal) */
-  name: string;
-  /** The height in inches */
-  height: number;
-  /** The width in inches */
-  width: number;
-}
+import { DocumentOrientation } from '../models/document-orientation.enum';
+import { DocumentType } from '../models/document-documentType.model';
 
 /** @todo:
  * - Assume 300 ppi (highest quality available)
@@ -38,7 +27,7 @@ export class ScaledTableComponent implements OnInit {
   public orientation: DocumentOrientation;
 
   @Input()
-  public scale: IDocumentScale;
+  public documentType: DocumentType;
 
   constructor() {}
 

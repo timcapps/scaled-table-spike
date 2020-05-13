@@ -1,4 +1,4 @@
 export enum DocumentOrientation {
-    Portrait = 1,
-    Landscape = 2
+  Portrait = 1,
+  Landscape = 2
 }
