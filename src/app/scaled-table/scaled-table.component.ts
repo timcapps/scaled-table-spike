@@ -44,7 +44,7 @@ export class ScaledTableComponent implements OnInit {
   private _parentContainerElement: HTMLElement;
   private _tableDimensions: ITableDimensions = { height: 100, width: 100 };
   private _scaleFactor: number;
-  private _documentAspectRatio: number;
+  private _documentRatio: number;
 
   @Input()
   public orientation: DocumentOrientation;
@@ -70,12 +70,13 @@ export class ScaledTableComponent implements OnInit {
   public ngOnInit() {
     this._tableElement = coerceElement(this._element);
     this._parentContainerElement = coerceElement(this._element).parentElement;
-    this._documentAspectRatio = this._getDocumentAspectRatio(this.orientation, this.documentType);
+    this._documentRatio = this._getDocumentRatio(this.orientation, this.documentType);
     
-    console.log(this._documentAspectRatio);
+    console.log(this._documentRatio);
   }
 
-  private _getDocumentAspectRatio(orientation: DocumentOrientation, documentType: DocumentType): number {
+  /** @info Gets the ratio of the document based on its orientation */
+  private _getDocumentRatio(orientation: DocumentOrientation, documentType: DocumentType): number {
     if (orientation === DocumentOrientation.Portrait) {
       return divide(documentType.height, documentType.width);
     }
