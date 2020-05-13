@@ -96,6 +96,11 @@ export class ScaledTableComponent implements OnInit {
     return 0;
   }
 
+  private _setSubscriptions(): void {
+    /** Set a subscription here for changes to the viewport
+     * so we know when to update this._tableDimensions based
+     */
+  }
 
 
 
