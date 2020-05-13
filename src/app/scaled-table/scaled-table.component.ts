@@ -37,6 +37,7 @@ export class ScaledTableComponent implements OnInit {
   private static readonly PIXELS_PER_INCH: number = 300;
   private static readonly INCHES_PER_PIXEL: number = 0.0104166667;
 
+
   private tableDimensions: ITableDimensions = { height: 100, width: 100 };
 
   public _tableElement: HTMLElement;
@@ -48,12 +49,12 @@ export class ScaledTableComponent implements OnInit {
   @Input()
   public documentType: DocumentType;
 
-  @HostBinding("style.maxHeight")
+  @HostBinding("style.height")
   public get cssHeight(): string {
     return coerceCssPixelValue(this.tableDimensions.height);
   }
 
-  @HostBinding("style.maxWidth")
+  @HostBinding("style.width")
   public get cssWidth(): string {
     return coerceCssPixelValue(this.tableDimensions.width);
   }
