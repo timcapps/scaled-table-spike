@@ -8,6 +8,7 @@ import {
   HostBinding
 } from "@angular/core";
 import { coerceElement, coerceCssPixelValue } from "@angular/cdk/coercion";
+import { ViewportRuler } from '@angular/cdk/scrolling';
 
 import { DocumentOrientation } from "../models/document-orientation.enum";
 import { DocumentType } from "../models/document-type.model";
@@ -23,6 +24,8 @@ interface ITableDimensions {
  * - Find the ratio (height to width) and set this as the "scale factor"
  * - Need to know the viewport of the parent container
  * - Scale the table to the correct factor and orientation
+ * 
+ * - subscribe to ViewportRuler.change to rerun the functions to fill the 
  */
 
 @Component({
@@ -45,12 +48,12 @@ export class ScaledTableComponent implements OnInit {
   @Input()
   public documentType: DocumentType;
 
-  @HostBinding("style.height")
+  @HostBinding("style.maxHeight")
   public get cssHeight(): string {
     return coerceCssPixelValue(this.tableDimensions.height);
   }
 
-  @HostBinding("style.width")
+  @HostBinding("style.maxWidth")
   public get cssWidth(): string {
     return coerceCssPixelValue(this.tableDimensions.width);
   }
@@ -64,14 +67,29 @@ export class ScaledTableComponent implements OnInit {
     this._tableElement = coerceElement(this._element);
     this._parentContainerElement = coerceElement(this._element).parentElement;
 
-    this._setTableDimensions(100, 100);
-
-    console.log(this._tableElement.getBoundingClientRect());
+    console.log(this._parentContainerElement.getBoundingClientRect());
   }
 
   private _getParentContainerScaleFactor() {
     /** Need to find out what scale the parent container is compared to a full page
      * (i.e. 1/5 scale, etc...)
+     * 
+     * Min(parentContainerWidth / documentType.width, parentContainerHeight / documentType.height) = scaleFactor 
+     * 
+     * alternatively to the above, (for portrait.. for landscape the ratio is inverted)
+     * For the height use (11/8.5)(parentContainerHeight in pixels)
+     * For the width use (11/8.5)(parentContainerWidth in pixels)
+     * 
+     * actual table height in inches would be 11(scaleFactor)
+     * actual table width in inches would be 8.5(scaleFactor)
+     * 
+     * then translate inches to pixels 
+     * 
      */
   }
+
+
+
+
+
 }
