@@ -9,6 +9,7 @@ import {
 } from "@angular/core";
 import { coerceElement, coerceCssPixelValue } from "@angular/cdk/coercion";
 import { ViewportRuler } from '@angular/cdk/scrolling';
+import { divide } from 'ramda';
 
 import { DocumentOrientation } from "../models/document-orientation.enum";
 import { DocumentType } from "../models/document-type.model";
@@ -69,12 +70,16 @@ export class ScaledTableComponent implements OnInit {
   public ngOnInit() {
     this._tableElement = coerceElement(this._element);
     this._parentContainerElement = coerceElement(this._element).parentElement;
+    this._documentAspectRatio = this._getDocumentAspectRatio(this.orientation, this.documentType);
     
-    console.log(this._parentContainerElement.getBoundingClientRect());
+    console.log(this._documentAspectRatio);
   }
 
-  private _getDocumentAspectRatio(): number {
-    return 0;
+  private _getDocumentAspectRatio(orientation: DocumentOrientation, documentType: DocumentType): number {
+    if (orientation === DocumentOrientation.Portrait) {
+      return divide(documentType.height, documentType.width);
+    }
+    return divide(documentType.width, documentType.height);
   }
 
   private _getParentContainerScaleFactor(): number {
