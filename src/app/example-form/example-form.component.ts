@@ -34,7 +34,8 @@ export class ExampleFormComponent implements OnInit {
     });
 
     this.settingsForm.valueChanges.subscribe(changes => {
-      console.log(changes);
+      console.log('Settings Form Updated', changes);
+      this.changes.emit(changes);
     });
   }
 }
