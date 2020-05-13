@@ -5,8 +5,11 @@
 .preview-panel {
   display: flex;
   flex: 60%;
+  flex-direction: column;
   height: 600px;
   background: gray;
+  justify-content: center;
+  align-items: center;
 }
 
 .form-panel {
