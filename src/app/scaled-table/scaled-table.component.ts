@@ -21,8 +21,8 @@ export class ScaledTableComponent implements OnInit {
   private static readonly PIXELS_PER_INCH: number = 300;
   private static readonly INCHES_PER_PIXEL: number = 0.0104166667;
 
-  public _tableElement: ElementRef<HTMLElement>;
-  public _parentContainer: ElementRef<HTMLElement>;
+  public _tableElement: HTMLElement;
+  public _parentContainerElement: HTMLElement;
 
   @Input()
   public orientation: DocumentOrientation;
@@ -30,11 +30,11 @@ export class ScaledTableComponent implements OnInit {
   @Input()
   public documentType: DocumentType;
 
-  constructor(private _element: ElementRef) {}
+  constructor(private _element: ElementRef<HTMLElement>) {}
 
   public ngOnInit() {
     this._tableElement = coerceElement(this._element);
-    this._parentContainer = coerceElement(this._element).parentElement;
+    this._parentContainerElement = coerceElement(this._element).parentElement;
     this._tableElement.style.width = `100px`;
 
     console.log(this._tableElement.getBoundingClientRect());
