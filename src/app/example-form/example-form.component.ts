@@ -32,5 +32,9 @@ export class ExampleFormComponent implements OnInit {
       orientation: new FormControl(this.orientations[0].value),
       documentType: new FormControl(this.documentTypes[0])
     });
+
+    this.settingsForm.valueChanges.subscribe(changes => {
+      console.log(changes);
+    });
   }
 }

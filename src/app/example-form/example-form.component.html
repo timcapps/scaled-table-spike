@@ -11,7 +11,7 @@
         <div class="form-group" style="margin-top: 10px; padding: 10px;">
           <label for="document-type">Document:</label>
           <select formControlName="documentType" class="form-control" id="document-type" name="document-type" style="width: 250px;">
-            <option *ngFor="let type of documentTypes" [value]="type">{{type.name}}</option>
+            <option *ngFor="let type of documentTypes" [ngValue]="type">{{type.name}}</option>
           </select>
         </div>
       </form>
