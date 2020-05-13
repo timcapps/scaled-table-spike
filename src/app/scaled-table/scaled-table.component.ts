@@ -34,14 +34,16 @@ interface ITableDimensions {
   styleUrls: ["./scaled-table.component.css"]
 })
 export class ScaledTableComponent implements OnInit {
+
+  /** Constants */
   private static readonly PIXELS_PER_INCH: number = 300;
   private static readonly INCHES_PER_PIXEL: number = 0.0104166667;
 
-
-  private tableDimensions: ITableDimensions = { height: 100, width: 100 };
-
-  public _tableElement: HTMLElement;
-  public _parentContainerElement: HTMLElement;
+  private _tableElement: HTMLElement;
+  private _parentContainerElement: HTMLElement;
+  private _tableDimensions: ITableDimensions = { height: 100, width: 100 };
+  private _scaleFactor: number;
+  private _documentAspectRatio: number;
 
   @Input()
   public orientation: DocumentOrientation;
@@ -51,12 +53,12 @@ export class ScaledTableComponent implements OnInit {
 
   @HostBinding("style.height")
   public get cssHeight(): string {
-    return coerceCssPixelValue(this.tableDimensions.height);
+    return coerceCssPixelValue(this._tableDimensions.height);
   }
 
   @HostBinding("style.width")
   public get cssWidth(): string {
-    return coerceCssPixelValue(this.tableDimensions.width);
+    return coerceCssPixelValue(this._tableDimensions.width);
   }
 
   constructor(
@@ -67,11 +69,15 @@ export class ScaledTableComponent implements OnInit {
   public ngOnInit() {
     this._tableElement = coerceElement(this._element);
     this._parentContainerElement = coerceElement(this._element).parentElement;
-
+    
     console.log(this._parentContainerElement.getBoundingClientRect());
   }
 
-  private _getParentContainerScaleFactor() {
+  private _getDocumentAspectRatio(): number {
+    return 0;
+  }
+
+  private _getParentContainerScaleFactor(): number {
     /** Need to find out what scale the parent container is compared to a full page
      * (i.e. 1/5 scale, etc...)
      * 
@@ -87,6 +93,7 @@ export class ScaledTableComponent implements OnInit {
      * then translate inches to pixels 
      * 
      */
+    return 0;
   }
 
 
