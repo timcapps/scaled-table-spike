@@ -21,8 +21,6 @@ export class ScaledTableComponent implements OnInit {
   private static readonly PIXELS_PER_INCH: number = 300;
   private static readonly INCHES_PER_PIXEL: number = 0.0104166667;
 
-  private _scaleFactor;
-
   @Input()
   public orientation: DocumentOrientation;
 
