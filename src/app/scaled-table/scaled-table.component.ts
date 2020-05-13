@@ -1,7 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, ElementRef, OnInit, ViewChild } from "@angular/core";
+import { coerceElement } from "@angular/cdk/coercion";
 
-import { DocumentOrientation } from '../models/document-orientation.enum';
-import { DocumentType } from '../models/document-type.model';
+import { DocumentOrientation } from "../models/document-orientation.enum";
+import { DocumentType } from "../models/document-type.model";
 
 /** @todo:
  * - Assume 300 ppi (highest quality available)
@@ -12,14 +13,16 @@ import { DocumentType } from '../models/document-type.model';
  */
 
 @Component({
-  selector: 'app-scaled-table',
-  templateUrl: './scaled-table.component.html',
-  styleUrls: ['./scaled-table.component.css']
+  selector: "app-scaled-table",
+  templateUrl: "./scaled-table.component.html",
+  styleUrls: ["./scaled-table.component.css"]
 })
 export class ScaledTableComponent implements OnInit {
-
   private static readonly PIXELS_PER_INCH: number = 300;
   private static readonly INCHES_PER_PIXEL: number = 0.0104166667;
+
+  public _tableElement: ElementRef<HTMLElement>;
+  public _parentContainer: ElementRef<HTMLElement>;
 
   @Input()
   public orientation: DocumentOrientation;
@@ -27,11 +30,13 @@ export class ScaledTableComponent implements OnInit {
   @Input()
   public documentType: DocumentType;
 
-  constructor() {}
+  constructor(private _element: ElementRef) {}
 
   public ngOnInit() {
-    
+    this._tableElement = coerceElement(this._element);
+    this._parentContainer = coerceElement(this._element).parentElement;
+    this._tableElement.style.width = `100px`;
+
+    console.log(this._tableElement.getBoundingClientRect());
   }
-
-
 }
