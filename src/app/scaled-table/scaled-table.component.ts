@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 import { DocumentOrientation } from '../models/document-orientation.enum';
-import { DocumentType } from '../models/document-documentType.model';
+import { DocumentType } from '../models/document-type.model';
 
 /** @todo:
  * - Assume 300 ppi (highest quality available)
