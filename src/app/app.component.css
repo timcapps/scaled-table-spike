@@ -1,0 +1,16 @@
+.container-div {
+  display: flex;
+}
+
+.preview-panel {
+  display: flex;
+  flex: 60%;
+  height: 800px;
+  background: gray;
+}
+
+.form-panel {
+  display: flex;
+  height: 800px;
+  background: beige;
+}
