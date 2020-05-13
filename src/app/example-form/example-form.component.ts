@@ -21,8 +21,8 @@ export class ExampleFormComponent implements OnInit {
   ];
 
   public documentTypes: DocumentType[] = [
-    { name: "US Legal", height: 14, width: 8.5 },
-    { name: "US Letter", height: 11, width: 8.5 }
+    { name: "US Legal (8.5x14)", height: 14, width: 8.5 },
+    { name: "US Letter (8.5x11)", height: 11, width: 8.5 }
   ];
 
   constructor() {}

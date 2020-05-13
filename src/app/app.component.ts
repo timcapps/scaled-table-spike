@@ -11,7 +11,7 @@ import { DocumentType } from "./models/document-type.model";
 export class AppComponent  {
     
     public selectedOrientation: DocumentOrientation = DocumentOrientation.Portrait;
-    public selectedDocumentType: DocumentType = { name: "US Legal", height: 14, width: 8.5 };
+    public selectedDocumentType: DocumentType = { name: "US Legal (8.5x14)", height: 14, width: 8.5 };
 
     public onSettingsChange(event): void {
       if (!event) return;
