@@ -1,8 +1,21 @@
-import { Component, Input, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { coerceElement } from "@angular/cdk/coercion";
+import {
+  Component,
+  Input,
+  ElementRef,
+  OnInit,
+  ViewChild,
+  Renderer2,
+  HostBinding
+} from "@angular/core";
+import { coerceElement, coerceCssPixelValue } from "@angular/cdk/coercion";
 
 import { DocumentOrientation } from "../models/document-orientation.enum";
 import { DocumentType } from "../models/document-type.model";
+
+interface ITableDimensions {
+  height: number;
+  width: number;
+}
 
 /** @todo:
  * - Assume 300 ppi (highest quality available)
@@ -21,6 +34,8 @@ export class ScaledTableComponent implements OnInit {
   private static readonly PIXELS_PER_INCH: number = 300;
   private static readonly INCHES_PER_PIXEL: number = 0.0104166667;
 
+  private tableDimensions: ITableDimensions = { height: 100, width: 100 };
+
   public _tableElement: HTMLElement;
   public _parentContainerElement: HTMLElement;
 
@@ -30,13 +45,33 @@ export class ScaledTableComponent implements OnInit {
   @Input()
   public documentType: DocumentType;
 
-  constructor(private _element: ElementRef<HTMLElement>) {}
+  @HostBinding("style.height")
+  public get cssHeight(): string {
+    return coerceCssPixelValue(this.tableDimensions.height);
+  }
+
+  @HostBinding("style.width")
+  public get cssWidth(): string {
+    return coerceCssPixelValue(this.tableDimensions.width);
+  }
+
+  constructor(
+    private _element: ElementRef<HTMLElement>,
+    private _render: Renderer2
+  ) {}
 
   public ngOnInit() {
     this._tableElement = coerceElement(this._element);
     this._parentContainerElement = coerceElement(this._element).parentElement;
-    this._tableElement.style.width = `100px`;
+
+    this._setTableDimensions(100, 100);
 
     console.log(this._tableElement.getBoundingClientRect());
+  }
+
+  private _getParentContainerScaleFactor() {
+    /** Need to find out what scale the parent container is compared to a full page
+     * (i.e. 1/5 scale, etc...)
+     */
   }
 }
