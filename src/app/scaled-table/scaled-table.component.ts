@@ -77,6 +77,7 @@ export class ScaledTableComponent implements OnInit {
 
   private _reCalc(): void {
     
+    /** where to use this? */
     this._documentRatio = this._getDocumentRatio(
       this.orientation,
       this.documentType
