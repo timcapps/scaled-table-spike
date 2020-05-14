@@ -78,6 +78,12 @@ export class ScaledTableComponent implements OnInit {
       this._parentContainerElement,
       this.documentType
     );
+
+    /** @todo convert pixels/inches and multiply by scale factor */
+    this._tableDimensions = {
+      height: 100,
+      width: 100
+    };
   }
 
   /** @info Gets the ratio of the document based on its orientation */
