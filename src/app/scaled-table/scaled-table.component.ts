@@ -162,6 +162,8 @@ export class ScaledTableComponent implements OnInit {
       ratio = divide(documentType.width, documentType.height);
     }
 
+    console.log('parentHeight', parentContainer.clientHeight)
+
     const scaleFactor = {
       heightFactor: multiply(ratio, parentContainer.clientHeight),
       widthFactor: multiply(ratio, parentContainer.clientWidth)
@@ -173,7 +175,7 @@ export class ScaledTableComponent implements OnInit {
 
   private _setSubscriptions(): void {
     /** Subscribe to viewport changes so we know when to update this._tableDimensions */
-    this._ruler.change(1).subscribe(change => {
+    this._ruler.change(1000).subscribe(change => {
       this._reCalc();
     });
   }
