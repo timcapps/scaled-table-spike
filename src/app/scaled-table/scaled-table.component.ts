@@ -130,7 +130,11 @@ export class ScaledTableComponent implements OnInit {
     // const widthRatio = divide(parentContainer.clientWidth, documentType.width);
     // const heightRatio = divide(parentContainer.clientHeight, documentType.height);
 
-    const widthRatio = divide(documentType.width, parentContainer.clientWidth);
+    const widthRatio = divide(
+      documentType.width,
+      parentContainer.clientWidth
+    );
+
     const heightRatio = divide(
       documentType.height,
       parentContainer.clientHeight
