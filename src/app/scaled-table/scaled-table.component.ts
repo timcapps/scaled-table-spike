@@ -73,7 +73,7 @@ export class ScaledTableComponent implements OnInit {
 
   constructor(
     private _element: ElementRef<HTMLElement>,
-    private _render: Renderer2
+    private readonly _ruler: ViewportRuler
   ) {}
 
   public ngOnInit() {
