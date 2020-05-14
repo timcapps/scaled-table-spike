@@ -8,8 +8,8 @@ import {
   HostBinding
 } from "@angular/core";
 import { coerceElement, coerceCssPixelValue } from "@angular/cdk/coercion";
-import { ViewportRuler } from '@angular/cdk/scrolling';
-import { divide } from 'ramda';
+import { ViewportRuler } from "@angular/cdk/scrolling";
+import { divide, multiply } from "ramda";
 
 import { DocumentOrientation } from "../models/document-orientation.enum";
 import { DocumentType } from "../models/document-type.model";
@@ -25,9 +25,19 @@ interface ITableDimensions {
  * - Find the ratio (height to width) and set this as the "scale factor"
  * - Need to know the viewport of the parent container
  * - Scale the table to the correct factor and orientation
- * 
- * - subscribe to ViewportRuler.change to rerun the functions to fill the 
+ *
+ * - subscribe to ViewportRuler.change to rerun the functions to fill the
  */
+
+/*
+    
+     *
+     * actual table height in inches would be 11(scaleFactor)
+     * actual table width in inches would be 8.5(scaleFactor)
+     *
+     * then translate inches to pixels
+     *
+     */
 
 @Component({
   selector: "app-scaled-table",
@@ -35,7 +45,6 @@ interface ITableDimensions {
   styleUrls: ["./scaled-table.component.css"]
 })
 export class ScaledTableComponent implements OnInit {
-
   /** Constants */
   private static readonly PIXELS_PER_INCH: number = 300;
   private static readonly INCHES_PER_PIXEL: number = 0.0104166667;
@@ -70,36 +79,75 @@ export class ScaledTableComponent implements OnInit {
   public ngOnInit() {
     this._tableElement = coerceElement(this._element);
     this._parentContainerElement = coerceElement(this._element).parentElement;
-    this._documentRatio = this._getDocumentRatio(this.orientation, this.documentType);
-    
-    console.log(this._documentRatio);
+
+    this._reCalc();
+  }
+
+  private _reCalc(): void {
+    this._documentRatio = this._getDocumentRatio(
+      this.orientation,
+      this.documentType
+    );
+    this._scaleFactor = this._getScaleFactor(
+      this._parentContainerElement,
+      this.documentType
+    );
   }
 
   /** @info Gets the ratio of the document based on its orientation */
-  private _getDocumentRatio(orientation: DocumentOrientation, documentType: DocumentType): number {
+  private _getDocumentRatio(
+    orientation: DocumentOrientation,
+    documentType: DocumentType
+  ): number {
     if (orientation === DocumentOrientation.Portrait) {
       return divide(documentType.height, documentType.width);
     }
     return divide(documentType.width, documentType.height);
   }
 
-  private _getParentContainerScaleFactor(): number {
-    /** Need to find out what scale the parent container is compared to a full page
-     * (i.e. 1/5 scale, etc...)
-     * 
-     * Min(parentContainerWidth / documentType.width, parentContainerHeight / documentType.height) = scaleFactor 
-     * 
-     * alternatively to the above, (for portrait.. for landscape the ratio is inverted)
-     * For the height use (11/8.5)(parentContainerHeight in pixels)
-     * For the width use (11/8.5)(parentContainerWidth in pixels)
-     * 
-     * actual table height in inches would be 11(scaleFactor)
-     * actual table width in inches would be 8.5(scaleFactor)
-     * 
-     * then translate inches to pixels 
-     * 
-     */
-    return 0;
+  /**
+   * Min(parentContainerWidth / documentType.width, parentContainerHeight / documentType.height)
+   */
+  private _getScaleFactor(
+    parentContainer: HTMLElement,
+    documentType: DocumentType
+  ): number {
+    if (!parentContainer || !documentType) return 0;
+
+    const widthRatio = divide(parentContainer.clientWidth, documentType.width);
+    const heightRatio = divide(
+      parentContainer.clientHeight,
+      documentType.height
+    );
+
+    return Math.min(widthRatio, heightRatio);
+  }
+
+  /**
+   * alternatively to the above, (for portrait.. for landscape the ratio is inverted)
+   * For the height use (11/8.5)(parentContainerHeight in pixels)
+   * For the width use (11/8.5)(parentContainerWidth in pixels)
+   * @todo specify return type if we choose to go with this
+   */
+  private _getScaleFactor_Alt(
+    parentContainer: HTMLElement,
+    documentType: DocumentType,
+    orientation: DocumentOrientation
+  ): any {
+    if (!parentContainer || !documentType) return 0;
+
+    let ratio;
+
+    if (orientation === DocumentOrientation.Portrait) {
+      ratio = divide(documentType.height, documentType.width);
+    } else {
+      ratio = divide(documentType.width, documentType.height);
+    }
+
+    return {
+      heightFactor: multiply(ratio, parentContainer.clientHeight),
+      widthFactor: multiply(ratio, parentContainer.clientWidth)
+    };
   }
 
   private _setSubscriptions(): void {
@@ -107,8 +155,4 @@ export class ScaledTableComponent implements OnInit {
      * so we know when to update this._tableDimensions based
      */
   }
-
-
-
-
 }
