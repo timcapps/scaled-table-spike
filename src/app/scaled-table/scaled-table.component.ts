@@ -20,7 +20,7 @@ interface ITableDimensions {
 }
 
 /** @todos:
- * translate inches to pixels and set the table dimensions
+ * 
  *
  */
 
@@ -31,8 +31,8 @@ interface ITableDimensions {
 })
 export class ScaledTableComponent implements OnInit {
   /** Constants */
-  private static readonly PIXELS_PER_INCH: number = 300;
-  private static readonly INCHES_PER_PIXEL: number = 0.0104166667;
+  private readonly PIXELS_PER_INCH: number = 300;
+  private readonly INCHES_PER_PIXEL: number = 0.0104166667;
 
   private _tableElement: HTMLElement;
   private _parentContainerElement: HTMLElement;
@@ -70,19 +70,32 @@ export class ScaledTableComponent implements OnInit {
   }
 
   private _reCalc(): void {
+    
     this._documentRatio = this._getDocumentRatio(
       this.orientation,
       this.documentType
     );
+
     this._scaleFactor = this._getScaleFactor(
       this._parentContainerElement,
       this.documentType
     );
 
-    /** @todo convert pixels/inches and multiply by scale factor */
+    const altScaleFactor = this._getScaleFactor_Alt(
+      this._parentContainerElement,
+      this.documentType,
+      this.orientation
+    );
+
     this._tableDimensions = {
-      height: 100,
-      width: 100
+      height: multiply(
+        multiply(this.PIXELS_PER_INCH, this.documentType.height),
+        this._scaleFactor
+      ),
+      width: multiply(
+        multiply(this.PIXELS_PER_INCH, this.documentType.width),
+        this._scaleFactor
+      )
     };
   }
 
@@ -106,13 +119,19 @@ export class ScaledTableComponent implements OnInit {
   ): number {
     if (!parentContainer || !documentType) return 0;
 
-    const widthRatio = divide(parentContainer.clientWidth, documentType.width);
+    /** I think this was backwards */
+    // const widthRatio = divide(parentContainer.clientWidth, documentType.width);
+    // const heightRatio = divide(parentContainer.clientHeight, documentType.height);
+
+    const widthRatio = divide(documentType.width, parentContainer.clientWidth);
     const heightRatio = divide(
-      parentContainer.clientHeight,
-      documentType.height
+      documentType.height,
+      parentContainer.clientHeight
     );
 
-    return Math.min(widthRatio, heightRatio);
+    const scaleFactor = Math.min(widthRatio, heightRatio);
+    console.log('scaleFactor', scaleFactor);
+    return scaleFactor;
   }
 
   /**
@@ -136,16 +155,17 @@ export class ScaledTableComponent implements OnInit {
       ratio = divide(documentType.width, documentType.height);
     }
 
-    return {
+    const scaleFactor = {
       heightFactor: multiply(ratio, parentContainer.clientHeight),
       widthFactor: multiply(ratio, parentContainer.clientWidth)
     };
+
+    console.log('scaleFactor', scaleFactor);
+    return scaleFactor;
   }
 
   private _setSubscriptions(): void {
-    /** Set a subscription here for changes to the viewport
-     *  so we know when to update this._tableDimensions based
-     */
+    /** Subscribe to viewport changes so we know when to update this._tableDimensions */
     this._ruler.change(1).subscribe(change => {
       this._reCalc();
     });
