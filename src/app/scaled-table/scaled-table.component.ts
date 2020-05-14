@@ -3,6 +3,8 @@ import {
   Input,
   ElementRef,
   OnInit,
+  OnChanges,
+  SimpleChanges,
   ViewChild,
   Renderer2,
   HostBinding
@@ -61,12 +63,16 @@ export class ScaledTableComponent implements OnInit {
     private readonly _ruler: ViewportRuler
   ) {}
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this._tableElement = coerceElement(this._element);
     this._parentContainerElement = coerceElement(this._element).parentElement;
 
     this._reCalc();
     this._setSubscriptions();
+  }
+
+  public ngOnChanges(changes: SimpleChanges): void {
+    this._reCalc();
   }
 
   private _reCalc(): void {
@@ -160,7 +166,7 @@ export class ScaledTableComponent implements OnInit {
       widthFactor: multiply(ratio, parentContainer.clientWidth)
     };
 
-    console.log('scaleFactor', scaleFactor);
+    console.log('altScaleFactor', scaleFactor);
     return scaleFactor;
   }
 
