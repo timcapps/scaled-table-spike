@@ -19,25 +19,10 @@ interface ITableDimensions {
   width: number;
 }
 
-/** @todo:
- * - Assume 300 ppi (highest quality available)
- * - Take the dimensions for the document scale provided
- * - Find the ratio (height to width) and set this as the "scale factor"
- * - Need to know the viewport of the parent container
- * - Scale the table to the correct factor and orientation
+/** @todos:
+ * translate inches to pixels and set the table dimensions
  *
- * - subscribe to ViewportRuler.change to rerun the functions to fill the
  */
-
-/*
-    
-     *
-     * actual table height in inches would be 11(scaleFactor)
-     * actual table width in inches would be 8.5(scaleFactor)
-     *
-     * then translate inches to pixels
-     *
-     */
 
 @Component({
   selector: "app-scaled-table",
@@ -81,6 +66,7 @@ export class ScaledTableComponent implements OnInit {
     this._parentContainerElement = coerceElement(this._element).parentElement;
 
     this._reCalc();
+    this._setSubscriptions();
   }
 
   private _reCalc(): void {
@@ -152,7 +138,10 @@ export class ScaledTableComponent implements OnInit {
 
   private _setSubscriptions(): void {
     /** Set a subscription here for changes to the viewport
-     * so we know when to update this._tableDimensions based
+     *  so we know when to update this._tableDimensions based
      */
+    this._ruler.change(1).subscribe(change => {
+      this._reCalc();
+    });
   }
 }
