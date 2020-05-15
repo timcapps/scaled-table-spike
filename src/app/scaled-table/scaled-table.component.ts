@@ -16,7 +16,7 @@ import { divide, multiply } from "ramda";
 import { DocumentOrientation } from "../models/document-orientation.enum";
 import { DocumentType } from "../models/document-type.model";
 
-interface ITableDimensions {
+interface Dimensions {
   height: number;
   width: number;
 }
@@ -38,7 +38,7 @@ export class ScaledTableComponent implements OnInit {
 
   private _tableElement: HTMLElement;
   private _parentContainerElement: HTMLElement;
-  private _tableDimensions: ITableDimensions = { height: 100, width: 100 };
+  private _tableDimensions: Dimensions = { height: 100, width: 100 };
   private _scaleFactor: number;
   private _documentRatio: number;
 
@@ -97,12 +97,10 @@ export class ScaledTableComponent implements OnInit {
     this._tableDimensions = {
       height: multiply(
         multiply(this.PIXELS_PER_INCH, this.documentType.height),
-        //altScaleFactor.width
          this._scaleFactor
       ),
       width: multiply(
         multiply(this.PIXELS_PER_INCH, this.documentType.width),
-        //altScaleFactor.height
         this._scaleFactor
       )
     };
@@ -143,9 +141,28 @@ export class ScaledTableComponent implements OnInit {
     );
 
     const scaleFactor = Math.min(widthRatio, heightRatio);
+
     console.log('scaleFactor', scaleFactor);
+
     return scaleFactor;
   }
+
+/** Testing yet another method */
+  private _getScaleFactor2(
+    parentContainer: HTMLElement,
+    documentType: DocumentType
+  ): number {
+    if (!parentContainer || !documentType) return 0;
+
+    const docPixelWidth = multiply(documentType.width, this.PIXELS_PER_INCH);
+    const docPixelHeight = multiply(documentType.height, this.PIXELS_PER_INCH);
+    
+    const widthRatio = divide(parentContainer.clientWidth, docPixelWidth);
+    const heightRatio = divide(parentContainer.clientHeight, docPixelHeight);
+    
+    const ratio = Math.min(widthRatio, heightRatio);
+  }
+
 
   /**
    * alternatively to the above, (for portrait.. for landscape the ratio is inverted)
