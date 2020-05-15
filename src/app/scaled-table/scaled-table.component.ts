@@ -97,10 +97,12 @@ export class ScaledTableComponent implements OnInit {
     this._tableDimensions = {
       height: multiply(
         multiply(this.PIXELS_PER_INCH, this.documentType.height),
-        this._scaleFactor
+        //altScaleFactor.width
+         this._scaleFactor
       ),
       width: multiply(
         multiply(this.PIXELS_PER_INCH, this.documentType.width),
+        //altScaleFactor.height
         this._scaleFactor
       )
     };
