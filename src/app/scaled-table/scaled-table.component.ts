@@ -23,8 +23,7 @@ interface Dimensions {
 }
 
 /** @todos:
- * - Figure out what's wrong with the ratio for 8.5x11
- * - Once we know the ratio is being preserved scale up the table?
+ * - Figure out content projection
  * - Add content projection inside the scaled table to put the TsvDataTable
  */
 
