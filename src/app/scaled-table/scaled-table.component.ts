@@ -11,7 +11,7 @@ import {
 } from "@angular/core";
 import { coerceElement, coerceCssPixelValue } from "@angular/cdk/coercion";
 import { ViewportRuler } from "@angular/cdk/scrolling";
-import { divide, multiply } from "ramda";
+import { divide, multiply, subtract } from "ramda";
 
 import { DocumentOrientation } from "../models/document-orientation.enum";
 import { DocumentType } from "../models/document-type.model";
@@ -77,124 +77,40 @@ export class ScaledTableComponent implements OnInit {
   }
 
   private _reCalc(): void {
-    
-    /** where to use this? */
-    this._documentRatio = this._getDocumentRatio(
-      this.orientation,
-      this.documentType
-    );
+    if(!this.documentType || !this._parentContainerElement) return;
 
-    this._scaleFactor = this._getScaleFactor(
-      this._parentContainerElement,
-      this.documentType
-    );
+    console.log("recalculating");
 
-    const altScaleFactor = this._getScaleFactor_Alt(
-      this._parentContainerElement,
-      this.documentType,
-      this.orientation
-    );
+    const pixelMargin = 20;
+
+    const maxPixelWidth = subtract(this._parentContainerElement.clientWidth, pixelMargin);
+    const maxPixelHeight = subtract(this._parentContainerElement.clientHeight, pixelMargin);
+    console.log('maxPixelWidth', maxPixelWidth);
+    console.log('maxPixelHeight', maxPixelHeight);
+
+    const documentPixelWidth = multiply(this.documentType.width, this.PIXELS_PER_INCH);
+    const documentPixelHeight = multiply(this.documentType.height, this.PIXELS_PER_INCH);
+    console.log('documentPixelWidth', documentPixelWidth);
+    console.log('documentPixelHeight', documentPixelHeight);
+
+    const widthRatio = divide(maxPixelWidth, documentPixelWidth);
+    const heightRatio = divide(maxPixelHeight, documentPixelHeight);
+    console.log("widthRatio", widthRatio);
+    console.log("heightRatio", heightRatio);
+
+    const ratio = Math.min(widthRatio, heightRatio);
+    console.log("ratio", ratio);
+
+    const scaledWidth = multiply(documentPixelWidth, ratio);
+    const scaledHeight = multiply(documentPixelHeight, ratio);
+    console.log("scaledWidth", scaledWidth);
+    console.log("scaledHeight", scaledHeight);
 
     this._tableDimensions = {
-      height: multiply(
-        multiply(this.PIXELS_PER_INCH, this.documentType.height),
-         this._scaleFactor
-      ),
-      width: multiply(
-        multiply(this.PIXELS_PER_INCH, this.documentType.width),
-        this._scaleFactor
-      )
+      width: scaledWidth,
+      height: scaledHeight
     };
-  }
-
-  /** @info Gets the ratio of the document based on its orientation */
-  private _getDocumentRatio(
-    orientation: DocumentOrientation,
-    documentType: DocumentType
-  ): number {
-    if (orientation === DocumentOrientation.Portrait) {
-      return divide(documentType.height, documentType.width);
-    }
-    return divide(documentType.width, documentType.height);
-  }
-
-  /**
-   * Min(parentContainerWidth / documentType.width, parentContainerHeight / documentType.height)
-   */
-  private _getScaleFactor(
-    parentContainer: HTMLElement,
-    documentType: DocumentType
-  ): number {
-    if (!parentContainer || !documentType) return 0;
-
-    /** I think this was backwards */
-    // const widthRatio = divide(parentContainer.clientWidth, documentType.width);
-    // const heightRatio = divide(parentContainer.clientHeight, documentType.height);
-
-    const widthRatio = divide(
-      documentType.width,
-      parentContainer.clientWidth
-    );
-
-    const heightRatio = divide(
-      documentType.height,
-      parentContainer.clientHeight
-    );
-
-    const scaleFactor = Math.min(widthRatio, heightRatio);
-
-    console.log('scaleFactor', scaleFactor);
-
-    return scaleFactor;
-  }
-
-/** Testing yet another method */
-  private _getScaleFactor2(
-    parentContainer: HTMLElement,
-    documentType: DocumentType
-  ): number {
-    if (!parentContainer || !documentType) return 0;
-
-    const docPixelWidth = multiply(documentType.width, this.PIXELS_PER_INCH);
-    const docPixelHeight = multiply(documentType.height, this.PIXELS_PER_INCH);
-    
-    const widthRatio = divide(parentContainer.clientWidth, docPixelWidth);
-    const heightRatio = divide(parentContainer.clientHeight, docPixelHeight);
-    
-    const ratio = Math.min(widthRatio, heightRatio);
-  }
-
-
-  /**
-   * alternatively to the above, (for portrait.. for landscape the ratio is inverted)
-   * For the height use (11/8.5)(parentContainerHeight in pixels)
-   * For the width use (11/8.5)(parentContainerWidth in pixels)
-   * @todo specify return type if we choose to go with this
-   */
-  private _getScaleFactor_Alt(
-    parentContainer: HTMLElement,
-    documentType: DocumentType,
-    orientation: DocumentOrientation
-  ): any {
-    if (!parentContainer || !documentType) return 0;
-
-    let ratio;
-
-    if (orientation === DocumentOrientation.Portrait) {
-      ratio = divide(documentType.height, documentType.width);
-    } else {
-      ratio = divide(documentType.width, documentType.height);
-    }
-
-    console.log('parentHeight', parentContainer.clientHeight)
-
-    const scaleFactor = {
-      heightFactor: multiply(ratio, parentContainer.clientHeight),
-      widthFactor: multiply(ratio, parentContainer.clientWidth)
-    };
-
-    console.log('altScaleFactor', scaleFactor);
-    return scaleFactor;
+    console.log(this._tableDimensions);
   }
 
   private _setSubscriptions(): void {
