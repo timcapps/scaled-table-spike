@@ -129,9 +129,7 @@ export class ScaledTableComponent implements OnInit {
         width: scaledWidth,
         height: scaledHeight
       };
-    }
-    
-    if (this.orientation === DocumentOrientation.Landscape) {
+    } else {
       console.log('setting for landscape');
       this._tableDimensions = {
         width: scaledHeight,
