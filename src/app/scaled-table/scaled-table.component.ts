@@ -7,7 +7,8 @@ import {
   SimpleChanges,
   ViewChild,
   Renderer2,
-  HostBinding
+  HostBinding,
+ChangeDetectorRef
 } from "@angular/core";
 import { coerceElement, coerceCssPixelValue } from "@angular/cdk/coercion";
 import { ViewportRuler } from "@angular/cdk/scrolling";
@@ -61,7 +62,8 @@ export class ScaledTableComponent implements OnInit {
 
   constructor(
     private _element: ElementRef<HTMLElement>,
-    private readonly _ruler: ViewportRuler
+    private readonly _ruler: ViewportRuler, 
+    private readonly _cd: ChangeDetectorRef
   ) {}
 
   public ngOnInit(): void {
@@ -77,21 +79,33 @@ export class ScaledTableComponent implements OnInit {
   }
 
   private _reCalc(): void {
-    if(!this.documentType || !this._parentContainerElement) return;
+    if (!this.documentType || !this._parentContainerElement) return;
 
     console.log("recalculating");
 
-    const pixelMargin = 60;
+    const pixelMargin = 20;
 
-    const maxPixelWidth = subtract(this._parentContainerElement.clientWidth, pixelMargin);
-    const maxPixelHeight = subtract(this._parentContainerElement.clientHeight, pixelMargin);
-    console.log('maxPixelWidth', maxPixelWidth);
-    console.log('maxPixelHeight', maxPixelHeight);
+    const maxPixelWidth = subtract(
+      this._parentContainerElement.clientWidth,
+      pixelMargin + 175
+    );
+    const maxPixelHeight = subtract(
+      this._parentContainerElement.clientHeight,
+      pixelMargin
+    );
+    console.log("maxPixelWidth", maxPixelWidth);
+    console.log("maxPixelHeight", maxPixelHeight);
 
-    const documentPixelWidth = multiply(this.documentType.width, this.PIXELS_PER_INCH);
-    const documentPixelHeight = multiply(this.documentType.height, this.PIXELS_PER_INCH);
-    console.log('documentPixelWidth', documentPixelWidth);
-    console.log('documentPixelHeight', documentPixelHeight);
+    const documentPixelWidth = multiply(
+      this.documentType.width,
+      this.PIXELS_PER_INCH
+    );
+    const documentPixelHeight = multiply(
+      this.documentType.height,
+      this.PIXELS_PER_INCH
+    );
+    console.log("documentPixelWidth", documentPixelWidth);
+    console.log("documentPixelHeight", documentPixelHeight);
 
     const widthRatio = divide(maxPixelWidth, documentPixelWidth);
     const heightRatio = divide(maxPixelHeight, documentPixelHeight);
@@ -106,20 +120,30 @@ export class ScaledTableComponent implements OnInit {
     console.log("scaledWidth", scaledWidth);
     console.log("scaledHeight", scaledHeight);
 
-    this._tableDimensions = {
-      width: scaledWidth,
-      height: scaledHeight
-    };
+    console.log('orientation', this.orientation);
 
+    /** @todo figure out why this isn't toggling */
+    if (this.orientation === DocumentOrientation.Portrait) {
+      console.log('setting for portrait');
+      this._tableDimensions = {
+        width: scaledWidth,
+        height: scaledHeight
+      };
+    }
     
-    // this._tableDimensions = {
-    //   width: scaledHeight,
-    //   height: scaledWidth
-    // };
+    if (this.orientation === DocumentOrientation.Landscape) {
+      console.log('setting for landscape');
+      this._tableDimensions = {
+        width: scaledHeight,
+        height: scaledWidth
+      };
+    }
+    this._cd.markForCheck();
 
     console.log(this._tableDimensions);
   }
 
+  /** @todo throttle this more? */
   private _setSubscriptions(): void {
     /** Subscribe to viewport changes so we know when to update this._tableDimensions */
     this._ruler.change(1000).subscribe(change => {
