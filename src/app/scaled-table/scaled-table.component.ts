@@ -81,7 +81,7 @@ export class ScaledTableComponent implements OnInit {
 
     console.log("recalculating");
 
-    const pixelMargin = 20;
+    const pixelMargin = 60;
 
     const maxPixelWidth = subtract(this._parentContainerElement.clientWidth, pixelMargin);
     const maxPixelHeight = subtract(this._parentContainerElement.clientHeight, pixelMargin);
@@ -110,6 +110,13 @@ export class ScaledTableComponent implements OnInit {
       width: scaledWidth,
       height: scaledHeight
     };
+
+    
+    // this._tableDimensions = {
+    //   width: scaledHeight,
+    //   height: scaledWidth
+    // };
+
     console.log(this._tableDimensions);
   }
 
