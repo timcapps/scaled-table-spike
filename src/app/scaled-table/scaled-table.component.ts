@@ -82,6 +82,9 @@ export class ScaledTableComponent implements OnInit {
 
     console.log("recalculating");
 
+    /** @todo we will need to tweak this constant depending on our modal size 
+     * when we implement this in the app
+     */
     const pixelMargin = 20;
 
     const maxPixelWidth = subtract(
@@ -140,10 +143,10 @@ export class ScaledTableComponent implements OnInit {
     console.log(this._tableDimensions);
   }
 
-  /** @todo throttle this more? */
+  /** @todo we don't need every emmission from this */
   private _setSubscriptions(): void {
     /** Subscribe to viewport changes so we know when to update this._tableDimensions */
-    this._ruler.change(5000).subscribe(change => {
+    this._ruler.change(3000).subscribe(change => {
       this._reCalc();
     });
   }
