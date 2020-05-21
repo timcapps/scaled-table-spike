@@ -16,6 +16,7 @@ import { divide, multiply, subtract } from "ramda";
 
 import { DocumentOrientation } from "../models/document-orientation.enum";
 import { DocumentType } from "../models/document-type.model";
+import { distinctUntilChanged } from "rxjs/operators";
 
 interface Dimensions {
   height: number;
@@ -145,7 +146,7 @@ export class ScaledTableComponent implements OnInit {
   /** @todo we don't need every emmission from this */
   private _setSubscriptions(): void {
     /** Subscribe to viewport changes so we know when to update this._tableDimensions */
-    this._ruler.change(3000).subscribe(change => {
+    this._ruler.change(2000).pipe(distinctUntilChanged()).subscribe(change => {
       this._reCalc();
     });
   }
