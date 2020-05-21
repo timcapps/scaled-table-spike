@@ -119,22 +119,22 @@ export class ScaledTableComponent implements OnInit {
     console.log("scaledWidth", scaledWidth);
     console.log("scaledHeight", scaledHeight);
 
-    console.log('orientation', this.orientation);
-
-    /** @todo figure out why this isn't toggling */
-    if (this.orientation === DocumentOrientation.Portrait) {
+    if (this.orientation.valueOf() == DocumentOrientation.Portrait.valueOf()) {
       console.log('setting for portrait');
       this._tableDimensions = {
         width: scaledWidth,
         height: scaledHeight
       };
-    } else {
+    }
+    
+    if (this.orientation.valueOf() == DocumentOrientation.Landscape.valueOf()) {
       console.log('setting for landscape');
       this._tableDimensions = {
         width: scaledHeight,
         height: scaledWidth
       };
     }
+
     this._cd.markForCheck();
 
     console.log(this._tableDimensions);
@@ -143,7 +143,7 @@ export class ScaledTableComponent implements OnInit {
   /** @todo throttle this more? */
   private _setSubscriptions(): void {
     /** Subscribe to viewport changes so we know when to update this._tableDimensions */
-    this._ruler.change(1000).subscribe(change => {
+    this._ruler.change(5000).subscribe(change => {
       this._reCalc();
     });
   }
