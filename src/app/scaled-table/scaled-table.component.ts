@@ -35,7 +35,6 @@ interface Dimensions {
 export class ScaledTableComponent implements OnInit {
   /** Constants */
   private readonly PIXELS_PER_INCH: number = 300;
-  private readonly INCHES_PER_PIXEL: number = 0.0104166667;
 
   private _tableElement: HTMLElement;
   private _parentContainerElement: HTMLElement;
